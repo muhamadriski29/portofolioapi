@@ -15,6 +15,7 @@ class ProjectModel extends Model
         'slug',
         'description',
         'image_url',
-        'tech_stack'
+        'tech_stack',
+        'portfolio_url'
     ];
 }

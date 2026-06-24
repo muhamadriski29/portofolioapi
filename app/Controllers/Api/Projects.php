@@ -64,7 +64,7 @@ class Projects extends ResourceController
             return $this->failNotFound('Project dengan ID ' . $id . ' tidak ditemukan');
         }
 
-        $data = $this->request->getRawInput();
+        $data = $this->request->getJSON(true);
 
         if ($this->model->update($id, $data)) {
             $response = [

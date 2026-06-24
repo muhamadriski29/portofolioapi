@@ -5,21 +5,20 @@ namespace App\Filters;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
 use CodeIgniter\Filters\FilterInterface;
-use Config\Services;
 
 class CorsFilter implements FilterInterface
 {
     public function before(RequestInterface $request, $arguments = null)
     {
-        // Menggunakan native header memastikan CORS header terkirim bahkan jika terjadi error/exception
-        header('Access-Control-Allow-Origin: *');
-        header('Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization, X-API-KEY');
-        header('Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE, PATCH');
+        // Gunakan Response Object CI4 untuk menghindari konflik dengan output buffer
+        $response = service('response');
 
-        // Menangani preflight request (OPTIONS)
+        $response->setHeader('Access-Control-Allow-Origin', '*');
+        $response->setHeader('Access-Control-Allow-Headers', 'X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Request-Method, Authorization');
+        $response->setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE, PATCH');
+
+        // Tangkap preflight request (OPTIONS) dan langsung kembalikan 200
         if ($request->getMethod(true) === 'OPTIONS') {
-            // Mengembalikan response HTTP 200 secara langsung
-            $response = Services::response();
             $response->setStatusCode(200);
             return $response;
         }
@@ -27,6 +26,9 @@ class CorsFilter implements FilterInterface
 
     public function after(RequestInterface $request, ResponseInterface $response, $arguments = null)
     {
-        // Tidak ada action yang diperlukan setelah response
+        // Pastikan CORS header juga ada di setiap response normal
+        $response->setHeader('Access-Control-Allow-Origin', '*');
+        $response->setHeader('Access-Control-Allow-Headers', 'X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Request-Method, Authorization');
+        $response->setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE, PATCH');
     }
 }

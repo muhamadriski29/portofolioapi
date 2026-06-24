@@ -36,6 +36,12 @@ class CreateProjectsTable extends Migration
             'tech_stack' => [
                 'type'       => 'VARCHAR',
                 'constraint' => '255',
+                'null'       => true,
+            ],
+            'portfolio_url' => [
+                'type'       => 'VARCHAR',
+                'constraint' => '255',
+                'null'       => true,
             ],
             'created_at' => [
                 'type' => 'DATETIME',
